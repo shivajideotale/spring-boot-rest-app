@@ -1,7 +1,5 @@
 package com.spring.rest.model;
 
-import java.util.List;
-
 public class User {
 
 	private int userId;
