@@ -1,7 +1,5 @@
 package com.spring.rest.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +72,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		//employeeList.remove(empId);
 		employeeDaoRef.deleteById(empId);
+	}
+
+	@Override
+	public List<Employee> getEmployeeByDept(String deptName) {
+		// TODO Auto-generated method stub
+		return employeeDaoRef.findByDeptName(deptName);
 	}
 
 	

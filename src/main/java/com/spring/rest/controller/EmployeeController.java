@@ -48,4 +48,11 @@ public class EmployeeController {
 	public void deleteEmployee(@PathVariable("id") int empId) {
 		employeeService.deleteEmployee(empId);
 	}
+	
+	@GetMapping("dept/{deptName}")
+	public List<Employee> getEmployeeByDept(@RequestBody Employee employee, @PathVariable("deptName") String deptName) {
+		//return employeeService.getEmployeeById(empId);
+		return employeeService.getEmployeeByDept(deptName);
+	}
+	
 }
