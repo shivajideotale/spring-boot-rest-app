@@ -1,7 +1,6 @@
 package com.spring.rest.dto;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ApiErrorDTO {

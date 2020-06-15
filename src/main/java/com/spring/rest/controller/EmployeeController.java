@@ -1,17 +1,22 @@
 package com.spring.rest.controller;
 
-import com.spring.rest.exception.FieldException;
-import com.spring.rest.model.Employee;
-import com.spring.rest.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.spring.rest.exception.FieldValidationException;
+import com.spring.rest.model.Employee;
+import com.spring.rest.service.EmployeeService;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -30,7 +35,7 @@ public class EmployeeController {
 	@RequestMapping(method = RequestMethod.POST)
 	public Employee addEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			throw new FieldException("FieldException FieldException ", bindingResult);
+			throw new FieldValidationException("FieldException FieldException ", bindingResult);
 		}
 		Employee savedEmployee = employeeService.save(employee);
 		return savedEmployee;

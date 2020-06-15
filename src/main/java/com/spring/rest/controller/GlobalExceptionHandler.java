@@ -1,30 +1,25 @@
 package com.spring.rest.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.HandlerMethod;
-
 import com.spring.rest.dto.ApiErrorDTO;
 import com.spring.rest.dto.FieldErrorDTO;
 import com.spring.rest.exception.EmployeeNotFoundException;
-import com.spring.rest.exception.FieldException;
+import com.spring.rest.exception.FieldValidationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ResponseBody
-	@ExceptionHandler(FieldException.class)
+	@ExceptionHandler(FieldValidationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiErrorDTO handleFieldException(HttpServletRequest request, FieldException exception) {
+	public ApiErrorDTO handleFieldException(HttpServletRequest request, FieldValidationException exception) {
 
 		FieldErrorDTO errorDTO = new FieldErrorDTO();
 		
