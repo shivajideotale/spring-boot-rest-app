@@ -1,21 +1,16 @@
 package com.spring.rest.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.spring.rest.model.Employee;
 
 public interface EmployeeService {
 
-	List<Employee> getAllEmployees();
-	
-	Optional<Employee> getEmployeeById(int empId);
+	public Employee findById(int id);
 
-	void addEmployee(Employee employee);
+	public List<Employee> findAll();
 
-	void updateEmployee(Employee employee, int empId);
+	public Employee save(Employee employee);
 
-	void deleteEmployee(int empId);
-
-	List<Employee> getEmployeeByDept(String deptName);
+	public boolean delete(int id);
 }

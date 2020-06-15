@@ -1,58 +1,61 @@
 package com.spring.rest.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.spring.rest.exception.FieldException;
 import com.spring.rest.model.Employee;
 import com.spring.rest.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employee")
 public class EmployeeController {
 
 	@Autowired
-	EmployeeService employeeService;
+	private EmployeeService employeeService;
 
-	@GetMapping("/all")
-	public List<Employee> getAllEmployees() {
-		return employeeService.getAllEmployees();
-	}
+	// Select, Insert, Delete, Update Operations for an Employee
 
-	@GetMapping("/{id}")
-	public Optional<Employee> getEmployeeById(@PathVariable("id") int empId) {
-		//return employeeService.getEmployeeById(empId);
-		return employeeService.getEmployeeById(empId);
+	@RequestMapping(method = RequestMethod.GET)
+	public List<Employee> getAllEmployee() {
+		return employeeService.findAll();
 	}
 
-	@PostMapping
-	public void addEmployee(@RequestBody Employee employee) {
-		employeeService.addEmployee(employee);
+	@RequestMapping(method = RequestMethod.POST)
+	public Employee addEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			throw new FieldException("FieldException FieldException ", bindingResult);
+		}
+		Employee savedEmployee = employeeService.save(employee);
+		return savedEmployee;
 	}
 
-	@PutMapping(value = "/{id}")
-	public void updateEmployee(@RequestBody Employee employee, @PathVariable("id") int empId) {
-		employeeService.updateEmployee(employee, empId);
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Employee getEmployee(@PathVariable Integer id) {
+		return employeeService.findById(id);
 	}
 
-	@DeleteMapping(value = "/{id}")
-	public void deleteEmployee(@PathVariable("id") int empId) {
-		employeeService.deleteEmployee(empId);
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public Employee updateEmployee(@RequestBody Employee employee) {
+		Employee updatedEmployee = employeeService.save(employee);
+		return updatedEmployee;
 	}
-	
-	@GetMapping("dept/{deptName}")
-	public List<Employee> getEmployeeByDept(@RequestBody Employee employee, @PathVariable("deptName") String deptName) {
-		//return employeeService.getEmployeeById(empId);
-		return employeeService.getEmployeeByDept(deptName);
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public Map<String, String> deleteEmployee(@RequestParam Integer id) {
+		Map<String, String> status = new HashMap<>();
+		if (employeeService.delete(id)) {
+			status.put("Status", "Employee deleted successfully");
+		} else {
+			status.put("Status", "Employee not exist");
+		}
+		return status;
 	}
-	
+
 }
