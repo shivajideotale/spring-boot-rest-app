@@ -19,12 +19,12 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	@ExceptionHandler(FieldValidationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiErrorDTO handleFieldException(HttpServletRequest request, FieldValidationException exception) {
+	public ApiErrorDTO handleFieldException(HttpServletRequest req, FieldValidationException ex) {
 
 		FieldErrorDTO errorDTO = new FieldErrorDTO();
-		
-		errorDTO.setPath(request.getRequestURI());
-		List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+
+		errorDTO.setPath(req.getRequestURI());
+		List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(err -> errorDTO.addErrors(err.getField(), err.getDefaultMessage()));
 		return errorDTO;
 
@@ -33,11 +33,11 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	@ExceptionHandler(EmployeeNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ApiErrorDTO handleDataNotFoundException(HttpServletRequest request, EmployeeNotFoundException exception) {
+	public ApiErrorDTO handleDataNotFoundException(HttpServletRequest req, EmployeeNotFoundException ex) {
 
 		ApiErrorDTO errorDTO = new ApiErrorDTO();
-		errorDTO.setPath(request.getRequestURI());
-		errorDTO.setErrorMessage(exception.getMessage());
+		errorDTO.setPath(req.getRequestURI());
+		errorDTO.setErrorMessage(ex.getMessage());
 		errorDTO.setStatusCode(101);
 		return errorDTO;
 
