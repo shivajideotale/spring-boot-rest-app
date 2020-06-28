@@ -31,16 +31,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public boolean delete(int id) {
-		Optional<Employee> employee = employeeRepository.findById(id);
-		if (employee.isPresent()) {
-			employeeRepository.delete(employee.get());
-			return true;
-
-		} else {
-			return false;
-		}
-
+	public Employee delete(int id) {
+		Employee employee = this.findById(id);
+		employeeRepository.delete(employee);
+		return employee;
 	}
 
 }

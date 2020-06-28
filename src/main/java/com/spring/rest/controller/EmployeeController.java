@@ -1,19 +1,23 @@
 package com.spring.rest.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.spring.rest.exception.FieldValidationException;
 import com.spring.rest.model.Employee;
 import com.spring.rest.service.EmployeeService;
@@ -27,40 +31,43 @@ public class EmployeeController {
 
 	// Select, Insert, Delete, Update Operations for an Employee
 
-	@RequestMapping(method = RequestMethod.GET)
-	public List<Employee> getAllEmployee() {
-		return employeeService.findAll();
+	@GetMapping
+	public ResponseEntity<List<Employee>> getAllEmployee() {
+		List<Employee> employees = employeeService.findAll();
+
+		if (employees.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+
+		return new ResponseEntity<>(employees, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
-	public Employee addEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
+	@PostMapping
+	public ResponseEntity<Employee> addEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			throw new FieldValidationException("FieldException FieldException ", bindingResult);
 		}
 		Employee savedEmployee = employeeService.save(employee);
-		return savedEmployee;
+		return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public Employee getEmployee(@PathVariable Integer id) {
-		return employeeService.findById(id);
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Employee> getEmployee(@PathVariable int id) {
+		Employee employee = employeeService.findById(id);
+		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public Employee updateEmployee(@RequestBody Employee employee) {
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
 		Employee updatedEmployee = employeeService.save(employee);
-		return updatedEmployee;
+		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public Map<String, String> deleteEmployee(@RequestParam Integer id) {
-		Map<String, String> status = new HashMap<>();
-		if (employeeService.delete(id)) {
-			status.put("Status", "Employee deleted successfully");
-		} else {
-			status.put("Status", "Employee not exist");
-		}
-		return status;
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Employee> deleteEmployee(@PathVariable int id) {
+		Employee deletedEmp = employeeService.delete(id);
+		return new ResponseEntity<>(deletedEmp, HttpStatus.OK);
+
 	}
 
 }
